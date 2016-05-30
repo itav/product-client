@@ -4,7 +4,7 @@ namespace App;
 
 class ProductClient
 {
-    public function getInteresants()
+    public function getProducts()
     {
         $products = [];
         $client = new \GuzzleHttp\Client();
@@ -22,6 +22,24 @@ class ProductClient
         return $products;
     }
     
+    public function getTaxes()
+    {
+        $taxes = [];
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request('GET', 'http://product.dev/list/tax', [
+
+        ]);
+        
+        if ($res->getStatusCode() == 200){
+        
+            $json = $res->getBody()->read(1024000);
+            $serializer = new \Itav\Component\Serializer\Serializer();
+            $taxes = $serializer->unserialize($json, Tax::class . '[]');
+            return  $taxes;
+        }
+        return $taxes;
+    }    
+    
     /**
      * @param Product $product 
      * @return Form\Select
@@ -30,7 +48,7 @@ class ProductClient
     {
         $select = new \Itav\Component\Form\Select();
         $client = new \GuzzleHttp\Client();
-        $res = $client->get('http://interesant.dev/form');
+        $res = $client->get('http://product.dev/form');
         
         if ($res->getStatusCode() == 200){
         
