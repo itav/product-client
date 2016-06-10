@@ -57,5 +57,28 @@ class ProductClient
             $serializer->unserialize($json, \Itav\Component\Form\Select::class, $select);
         }
         return $select;
-    }  
+    }
+    
+    /**
+     * @param string $id 
+     * @return Tax
+     */
+    public function getTaxById($id)
+    {
+        $tax = new Tax();
+        $client = new \GuzzleHttp\Client();
+        $res = $client->get("http://product.dev/tax/info/$id", [
+            'headers' => [
+                'Accept' => 'application/json'
+            ]
+        ]);
+        
+        if ($res->getStatusCode() == 200){
+        
+            $json = $res->getBody()->getContents();
+            $serializer = new \Itav\Component\Serializer\Serializer();
+            $serializer->unserialize($json, Tax::class, $tax);
+        }
+        return $tax;
+    }
 }
